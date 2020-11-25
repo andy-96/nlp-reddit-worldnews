@@ -10,6 +10,7 @@ reddit = praw.Reddit(
     user_agent='Comment extraction'
 )
 
+print("Maja")
 url = "https://www.reddit.com/r/funny/comments/3g1jfi/buttons/"
 submission = reddit.submission(url=url)
 for top_level_comment in submission.comments:
