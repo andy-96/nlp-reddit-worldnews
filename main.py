@@ -54,11 +54,11 @@ class RedditCrawler:
             if i % 100 == 0:
                 print(f'{subreddit}: Crawled {i} posts')
 
-        with open(f'./data/{today}_{subreddit}_{timeframe}_subredwerdits.pkl', 'wb') as f:
+        with open(f'./data/{today}_{timeframe}_{subreddit}_subreddits.pkl', 'wb') as f:
             pickle.dump(top_subreddits, f)
             f.close()
 
-        with open(f'./data/{today}_{subreddit}_{timeframe}_comments.pkl', 'wb') as f:
+        with open(f'./data/{today}_{timeframe}_{subreddit}_comments.pkl', 'wb') as f:
             pickle.dump(top_comments, f)
             f.close()
 
