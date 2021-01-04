@@ -2,6 +2,7 @@ import praw
 from praw.models import MoreComments
 import os
 from dotenv import load_dotenv
+from datetime import date
 import pickle
 load_dotenv()
 
@@ -13,12 +14,13 @@ class RedditCrawler:
             user_agent='Comment extraction'
         )
 
-    def fetchAndSaveTopPostsOfToday(self):
+    def fetchAndSaveTopPosts(self, subreddit, timeframe):
         top_subreddits = []
         top_comments = []
+        today = date.today().isoformat()
 
-        subreddit = self.reddit.subreddit('worldnews')
-        posts = subreddit.top('month', limit=1000)
+        subreddit = self.reddit.subreddit(subreddit)
+        posts = subreddit.top(timeframe, limit=10000)
         for i, post in enumerate(posts):
             postData = {
                 'title': post.title,
@@ -49,17 +51,20 @@ class RedditCrawler:
                 }
                 top_comments.append(commentData)
 
-            if i % 10 == 0:
-                print(f'Crawled {i}/1000')
+            if i % 100 == 0:
+                print(f'{subreddit}: Crawled {i} posts')
 
-        with open('top_subreddits.pkl', 'wb') as f:
+        with open(f'./data/{today}_{subreddit}_{timeframe}_subredwerdits.pkl', 'wb') as f:
             pickle.dump(top_subreddits, f)
             f.close()
 
-        with open('top_comments.pkl', 'wb') as f:
+        with open(f'./data/{today}_{subreddit}_{timeframe}_comments.pkl', 'wb') as f:
             pickle.dump(top_comments, f)
             f.close()
 
 if __name__ == "__main__":
+    subreddits = ['worldnews', 'news', 'politics', 'upliftingnews', 'truenews']
     redditCrawler = RedditCrawler()
-    redditCrawler.fetchAndSaveTopPostsOfToday()
+    
+    for subreddit in subreddits:
+        redditCrawler.fetchAndSaveTopPosts(subreddit, 'year')
