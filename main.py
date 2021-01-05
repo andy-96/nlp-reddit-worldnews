@@ -15,12 +15,22 @@ class RedditCrawler:
         )
 
     def fetchAndSaveTopPosts(self, subreddit, timeframe):
+        if timeframe == 'year':
+            post_limit = 10000
+            comment_limit = 100
+        elif timeframe == 'day':
+            post_limit = 50
+            comment_limit = 10
+        else:
+            print('Not configured...')
+            exit()
+
         top_subreddits = []
         top_comments = []
         today = date.today().isoformat()
 
         subreddit = self.reddit.subreddit(subreddit)
-        posts = subreddit.top(timeframe, limit=10000)
+        posts = subreddit.top(timeframe, limit=post_limit)
         for i, post in enumerate(posts):
             postData = {
                 'title': post.title,
@@ -36,7 +46,7 @@ class RedditCrawler:
 
             submission = self.reddit.submission(url=f'https://www.reddit.com{postData["permalink"]}')
             submission.comment_sort = 'best'
-            submission.comment_limit = 100
+            submission.comment_limit = comment_limit
             for comment in submission.comments:
                 # check if end of page
                 if isinstance(comment, MoreComments):
@@ -51,7 +61,7 @@ class RedditCrawler:
                 }
                 top_comments.append(commentData)
 
-            if i % 100 == 0:
+            if i % 10 == 0:
                 print(f'{subreddit}: Crawled {i} posts')
 
         with open(f'./data/{today}_{timeframe}_{subreddit}_subreddits.pkl', 'wb') as f:
@@ -63,8 +73,12 @@ class RedditCrawler:
             f.close()
 
 if __name__ == "__main__":
+    print('Starting reddit fetch script...')
     subreddits = ['worldnews', 'news', 'politics', 'upliftingnews', 'truenews']
     redditCrawler = RedditCrawler()
     
     for subreddit in subreddits:
-        redditCrawler.fetchAndSaveTopPosts(subreddit, 'year')
+        print(f'Fetch data from {subreddit}')
+        redditCrawler.fetchAndSaveTopPosts(subreddit, 'day')
+    
+    print('Finish!')
