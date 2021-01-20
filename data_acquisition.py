@@ -15,7 +15,10 @@ class RedditCrawler:
         )
 
     def fetchAndSaveTopPosts(self, subreddit, timeframe):
-        if timeframe == 'year':
+        if timeframe == 'all':
+            post_limit = 10000
+            comment_limit = 200
+        elif timeframe == 'year':
             post_limit = 10000
             comment_limit = 100
         elif timeframe == 'day':
@@ -79,6 +82,6 @@ if __name__ == "__main__":
     
     for subreddit in subreddits:
         print(f'Fetch data from {subreddit}')
-        redditCrawler.fetchAndSaveTopPosts(subreddit, 'day')
+        redditCrawler.fetchAndSaveTopPosts(subreddit, 'year')
     
     print('Finish!')
