@@ -23,7 +23,6 @@ python-multipart = "*"
 typing = "*"
 typing-extensions = "*"
 praw = "*"
-tensorflow = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
