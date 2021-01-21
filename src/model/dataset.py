@@ -13,7 +13,6 @@ class Dataset():
         preprocessing = Preprocessing()
         self.headlines = preprocessing.headlines
         self.comments = preprocessing.comments
-        print(len(self.headlines))
         
         # Initialize tokenizer
         self.max_length_output = 0
