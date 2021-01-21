@@ -1,0 +1,96 @@
+import tensorflow as tf
+import os
+
+from src.model.transformer import Transformer
+from src.model.dataset import Dataset
+from src.config import NUM_LAYERS, EMBEDDING_DIMS, NUM_HEADS, EXPANDED_DIMS, CKPT_PATH
+from src.utils import create_masks
+
+class Train():
+    def __init__(self):
+        self.dataset = Dataset()
+        self.transformer = Transformer(NUM_LAYERS,
+                                       EMBEDDING_DIMS,
+                                       NUM_HEADS,
+                                       EXPANDED_DIMS,
+                                       self.dataset.input_vocab_size,
+                                       self.dataset.target_vocab_size,
+                                       pe_input=self.dataset.input_vocab_size,
+                                       pe_target=self.dataset.target_vocab_size)
+
+
+        self.learning_rate = CustomSchedule(EMBEDDING_DIMS)
+        self.optimizer = tf.keras.optimizers.Adam(self.learning_rate, beta_1=0.9, beta_2=0.98, 
+                                     epsilon=1e-9)
+        self.iterator = iter(self.dataset.dataset)
+        self.ckpt = tf.train.Checkpoint(step=tf.Variable(1),
+                                        optimizer=self.optimizer,
+                                        net=self.transformer,
+                                        iterator=self.iterator)
+        self.manager = tf.train.CheckpointManager(self.ckpt, CKPT_PATH, max_to_keep=3)
+
+    def train_and_checkpoint(self, manager, epochs):
+        self.ckpt.restore(manager.latest_checkpoint)
+        if manager.latest_checkpoint:
+            print("Restored from {}".format(manager.latest_checkpoint))
+        else:
+            print("Initializing from scratch.")
+
+        for epoch in range(epochs):
+            example = next(self.iterator)
+            loss = self.train_step(epoch)
+            self.ckpt.step.assign_add(1)
+            if int(self.ckpt.step) % 1 == 0:
+                save_path = manager.save()
+                print("Saved checkpoint for step {}: {}".format(int(self.ckpt.step), save_path))
+                print("loss {:1.2f}".format(loss.numpy()))
+
+    def train_step(self, epoch):
+        epoch_loss = 0
+
+        for (batch, (input, target)) in enumerate(self.dataset.take(self.dataset.steps_per_epoch)):
+            decoder_input = target[ : , :-1 ] # ignore <end> token
+            real = target[ : , 1: ]           # ignore <start> token
+            
+            enc_padding_mask, dec_padding_mask, combined_mask = create_masks(input, decoder_input)
+            
+            with tf.GradientTape() as tape:
+                predictions = self.transformer(input, decoder_input, True, enc_padding_mask, dec_padding_mask, combined_mask)
+                batch_loss = self.loss_function(real, predictions)
+
+            gradients = tape.gradient(batch_loss, self.transformer.trainable_variables)    
+            self.optimizer.apply_gradients(zip(gradients, self.transformer.trainable_variables))
+            epoch_loss += batch_loss  
+
+            if batch % 100 == 0:
+                print ('Epoch {} Batch {} Loss {:.4f}'.format(
+                    epoch + 1, batch, batch_loss.numpy()))
+            break
+
+        return batch_loss
+    
+    def loss_function(self, real, pred):
+        cross_entropy = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True, reduction='none')
+        loss = cross_entropy(y_true=real, y_pred=pred)
+        mask = tf.math.logical_not(tf.math.equal(real, 0))
+        mask = tf.cast(mask, dtype=loss.dtype)
+        loss = loss * mask
+        loss = tf.reduce_mean(loss)
+        return loss
+
+
+class CustomSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
+    def __init__(self, embedding_dims, warmup_steps=4000):
+        super(CustomSchedule, self).__init__()
+        
+        self.embedding_dims = embedding_dims
+        self.embedding_dims = tf.cast(self.embedding_dims, tf.float32)
+
+        self.warmup_steps = warmup_steps
+        
+    def __call__(self, step):
+        arg1 = tf.math.rsqrt(step)
+        arg2 = step * (self.warmup_steps ** -1.5)
+        
+        return tf.math.rsqrt(self.embedding_dims) * tf.math.minimum(arg1, arg2)
+    
