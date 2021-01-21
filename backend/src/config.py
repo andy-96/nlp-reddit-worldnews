@@ -1,5 +1,5 @@
 RAW_DATA_PATH = 'data/raw'
-PROCESSED_DATA_PATH = 'src/data'
+PROCESSED_DATA_PATH = 'data'
 CKPT_PATH = 'src/model/checkpoints'
 
 # Training
