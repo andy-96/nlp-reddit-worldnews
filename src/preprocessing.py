@@ -1,7 +1,7 @@
 import pickle
 import os
-from config import RAW_DATA_PATH, PROCESSED_DATA_PATH
-from utils import preprocess_sentence
+from src.config import RAW_DATA_PATH, PROCESSED_DATA_PATH
+from src.utils import preprocess_sentence
 
 DIRNAME = os.path.dirname(__file__)
 

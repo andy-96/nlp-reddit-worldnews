@@ -23,32 +23,27 @@ class Train():
         self.optimizer = tf.keras.optimizers.Adam(self.learning_rate, beta_1=0.9, beta_2=0.98, 
                                      epsilon=1e-9)
         self.iterator = iter(self.dataset.dataset)
-        self.ckpt = tf.train.Checkpoint(step=tf.Variable(1),
-                                        optimizer=self.optimizer,
-                                        net=self.transformer,
-                                        iterator=self.iterator)
-        self.manager = tf.train.CheckpointManager(self.ckpt, CKPT_PATH, max_to_keep=3)
 
-    def train_and_checkpoint(self, manager, epochs):
-        self.ckpt.restore(manager.latest_checkpoint)
-        if manager.latest_checkpoint:
-            print("Restored from {}".format(manager.latest_checkpoint))
-        else:
-            print("Initializing from scratch.")
+    def train_and_checkpoint(self, epochs):
+        for fname in sorted(CKPT_PATH, reverse=True):
+            if 'temp_model' in fname:
+                filename = fname.split('.')[0]
+                print(f'Use {filename}')
+                self.transformer.load_weights(os.path.join(CKPT_PATH, filename))
+                break
 
         for epoch in range(epochs):
             example = next(self.iterator)
             loss = self.train_step(epoch)
-            self.ckpt.step.assign_add(1)
-            if int(self.ckpt.step) % 1 == 0:
-                save_path = manager.save()
-                print("Saved checkpoint for step {}: {}".format(int(self.ckpt.step), save_path))
+            if epoch % 1 == 0:
+                self.transformer.save_weights(os.path.join(CKPT_PATH, f'{epoch}_temp_model'))
+                print(f'Saved weights for step {epoch}'))
                 print("loss {:1.2f}".format(loss.numpy()))
 
     def train_step(self, epoch):
         epoch_loss = 0
 
-        for (batch, (input, target)) in enumerate(self.dataset.take(self.dataset.steps_per_epoch)):
+        for (batch, (input, target)) in enumerate(self.dataset.dataset.take(self.dataset.steps_per_epoch)):
             decoder_input = target[ : , :-1 ] # ignore <end> token
             real = target[ : , 1: ]           # ignore <start> token
             
@@ -65,6 +60,7 @@ class Train():
             if batch % 100 == 0:
                 print ('Epoch {} Batch {} Loss {:.4f}'.format(
                     epoch + 1, batch, batch_loss.numpy()))
+            # TODO: remove break!!
             break
 
         return batch_loss
@@ -94,3 +90,8 @@ class CustomSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
         
         return tf.math.rsqrt(self.embedding_dims) * tf.math.minimum(arg1, arg2)
     
+
+if __name__ == '__main__':
+    train = Train()
+    EPOCHS = 1
+    train.train_and_checkpoint(EPOCHS)

@@ -1,28 +1,31 @@
-from tensorflow.keras import preprocessing
 import tensorflow as tf
 import os
-import pickle
 
-from src.config import PROCESSED_DATA_PATH, NUM_LAYERS, EMBEDDING_DIMS, NUM_HEADS, EXPANDED_DIMS
+from src.model.dataset import Dataset
 from src.model.transformer import Transformer
-from src.utils import preprocess_sentence
+from src.utils import preprocess_sentence, create_masks
+from src.config import NUM_LAYERS, EMBEDDING_DIMS, NUM_HEADS, EXPANDED_DIMS, CKPT_PATH
 
 class CommentGenerator():
     def __init__(self):
-
+        self.dataset = Dataset()
         self.transformer = Transformer(NUM_LAYERS,
                                        EMBEDDING_DIMS,
                                        NUM_HEADS,
                                        EXPANDED_DIMS,
-                                       input_vocab_size,
-                                       target_vocab_size,
-                                       pe_input=input_vocab_size,
-                                       pe_target=target_vocab_size)
+                                       self.dataset.input_vocab_size,
+                                       self.dataset.target_vocab_size,
+                                       pe_input=self.dataset.input_vocab_size,
+                                       pe_target=self.dataset.target_vocab_size)
+        weights_name = sorted([file for file in os.listdir(CKPT_PATH) if 'temp_model' in file], reverse=True)[0]
+        weights_name = weights_name.split('.')[0]
+        self.transformer.load_weights(os.path.join(CKPT_PATH, weights_name))
 
-    def max_len(self, sentence):
-        return max(len(s) for s in sentence)
+        self.headline_tokenizer = self.dataset.headline_tokenizer
+        self.comment_tokenizer = self.dataset.comment_tokenizer
+        self.max_length_output = self.dataset.max_length_output
 
-    def translate(self, sentence):
+    def generate(self, sentence):
         sentence = preprocess_sentence(sentence)
         input = self.headline_tokenizer.texts_to_sequences([sentence])
         input = tf.convert_to_tensor(input)
@@ -38,7 +41,7 @@ class CommentGenerator():
         
         output = start_token
         for i in range(self.max_length_output):
-            enc_padding_mask, dec_padding_mask, combined_mask, = self.create_masks(
+            enc_padding_mask, dec_padding_mask, combined_mask, = create_masks(
                                                                 input, output)
         
             predictions = self.transformer(input, 
@@ -67,4 +70,4 @@ class CommentGenerator():
 
 if __name__ == '__main__':
     commentGenerator = CommentGenerator()
-    print('yay')
+    commentGenerator.generate('I love you')
