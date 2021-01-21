@@ -1,5 +1,6 @@
 import tensorflow as tf
 import os
+import argparse
 
 from src.model.dataset import Dataset
 from src.model.transformer import Transformer
@@ -69,5 +70,9 @@ class CommentGenerator():
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--headline', help='type your headline')
+    args = parser.parse_args()
+
     commentGenerator = CommentGenerator()
-    print(commentGenerator.generate('I love you'))
+    print(commentGenerator.generate(args.headline))
