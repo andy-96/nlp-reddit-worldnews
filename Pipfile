@@ -1,0 +1,28 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pycodestyle = "*"
+autopep8 = "*"
+
+[packages]
+fastapi = "*"
+uvicorn = "*"
+sklearn = "*"
+joblib = "*"
+numpy = "*"
+pathlib = "*"
+starlette = "*"
+pydantic = "*"
+pandas = "*"
+pytest = "*"
+requests = "*"
+python-multipart = "*"
+typing = "*"
+typing-extensions = "*"
+praw = "*"
+
+[requires]
+python_version = "3.8"
