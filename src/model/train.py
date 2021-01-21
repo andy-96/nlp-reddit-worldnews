@@ -3,7 +3,7 @@ import os
 
 from src.model.transformer import Transformer
 from src.model.dataset import Dataset
-from src.config import NUM_LAYERS, EMBEDDING_DIMS, NUM_HEADS, EXPANDED_DIMS, CKPT_PATH
+from src.config import NUM_LAYERS, EMBEDDING_DIMS, NUM_HEADS, EXPANDED_DIMS, CKPT_PATH, EPOCHS
 from src.utils import create_masks
 
 class Train():
@@ -37,7 +37,7 @@ class Train():
             loss = self.train_step(epoch)
             if epoch % 1 == 0:
                 self.transformer.save_weights(os.path.join(CKPT_PATH, f'{epoch}_temp_model'))
-                print(f'Saved weights for step {epoch}'))
+                print(f'Saved weights for step {epoch}')
                 print("loss {:1.2f}".format(loss.numpy()))
 
     def train_step(self, epoch):
@@ -60,8 +60,6 @@ class Train():
             if batch % 100 == 0:
                 print ('Epoch {} Batch {} Loss {:.4f}'.format(
                     epoch + 1, batch, batch_loss.numpy()))
-            # TODO: remove break!!
-            break
 
         return batch_loss
     
@@ -93,5 +91,4 @@ class CustomSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
 
 if __name__ == '__main__':
     train = Train()
-    EPOCHS = 1
     train.train_and_checkpoint(EPOCHS)

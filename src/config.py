@@ -4,6 +4,7 @@ CKPT_PATH = 'src/model/checkpoints'
 
 # Training
 BATCH_SIZE = 64
+EPOCHS = 50
 
 # Transformer
 NUM_LAYERS = 4

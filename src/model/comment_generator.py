@@ -70,4 +70,4 @@ class CommentGenerator():
 
 if __name__ == '__main__':
     commentGenerator = CommentGenerator()
-    commentGenerator.generate('I love you')
+    print(commentGenerator.generate('I love you'))
