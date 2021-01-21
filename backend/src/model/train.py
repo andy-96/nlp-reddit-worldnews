@@ -25,7 +25,7 @@ class Train():
         self.iterator = iter(self.dataset.dataset)
 
     def train_and_checkpoint(self, epochs):
-        for fname in sorted(CKPT_PATH, reverse=True):
+        for fname in sorted(os.listdir(CKPT_PATH), reverse=True):
             if 'temp_model' in fname:
                 filename = fname.split('.')[0]
                 print(f'Use {filename}')
