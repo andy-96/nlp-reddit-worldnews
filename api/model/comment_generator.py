@@ -2,10 +2,10 @@ import tensorflow as tf
 import os
 import argparse
 
-from src.model.dataset import Dataset
-from src.model.transformer import Transformer
-from src.utils import preprocess_sentence, create_masks
-from src.config import NUM_LAYERS, EMBEDDING_DIMS, NUM_HEADS, EXPANDED_DIMS, CKPT_PATH
+from api.model.dataset import Dataset
+from api.model.transformer import Transformer
+from api.utils import preprocess_sentence, create_masks
+from api.config import NUM_LAYERS, EMBEDDING_DIMS, NUM_HEADS, EXPANDED_DIMS, CKPT_PATH
 
 class CommentGenerator():
     def __init__(self):

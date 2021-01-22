@@ -1,10 +1,10 @@
 import tensorflow as tf
 import os
 
-from src.model.transformer import Transformer
-from src.model.dataset import Dataset
-from src.config import NUM_LAYERS, EMBEDDING_DIMS, NUM_HEADS, EXPANDED_DIMS, CKPT_PATH, EPOCHS
-from src.utils import create_masks
+from api.model.transformer import Transformer
+from api.model.dataset import Dataset
+from api.config import NUM_LAYERS, EMBEDDING_DIMS, NUM_HEADS, EXPANDED_DIMS, CKPT_PATH, EPOCHS
+from api.utils import create_masks
 
 class Train():
     def __init__(self):

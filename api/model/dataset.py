@@ -3,8 +3,8 @@ import pickle
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 
-from src.preprocessing import Preprocessing
-from src.config import PROCESSED_DATA_PATH, BATCH_SIZE
+from api.preprocessing import Preprocessing
+from api.config import PROCESSED_DATA_PATH, BATCH_SIZE
 
 class Dataset():
     def __init__(self):
