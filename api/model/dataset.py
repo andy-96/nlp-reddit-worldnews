@@ -1,5 +1,3 @@
-import os
-import pickle
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 
@@ -8,7 +6,7 @@ from api.config import PROCESSED_DATA_PATH, BATCH_SIZE
 
 class Dataset():
     def __init__(self):
-        print('Initialize dataset...')
+        print('Initialize dataset')
         # Load data
         preprocessing = Preprocessing()
         self.headlines = preprocessing.headlines

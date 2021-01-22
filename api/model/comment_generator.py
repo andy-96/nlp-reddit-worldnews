@@ -9,6 +9,8 @@ from api.config import NUM_LAYERS, EMBEDDING_DIMS, NUM_HEADS, EXPANDED_DIMS, CKP
 
 class CommentGenerator():
     def __init__(self):
+        print('Initialize comment generator')
+
         self.dataset = Dataset()
         self.transformer = Transformer(NUM_LAYERS,
                                        EMBEDDING_DIMS,
@@ -25,8 +27,10 @@ class CommentGenerator():
         self.headline_tokenizer = self.dataset.headline_tokenizer
         self.comment_tokenizer = self.dataset.comment_tokenizer
         self.max_length_output = self.dataset.max_length_output
+        print('Finished initializing')
 
     def generate(self, sentence):
+        print('Start generation...')
         sentence = preprocess_sentence(sentence)
         input = self.headline_tokenizer.texts_to_sequences([sentence])
         input = tf.convert_to_tensor(input)
