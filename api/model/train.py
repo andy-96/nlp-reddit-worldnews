@@ -8,6 +8,8 @@ from api.utils import create_masks
 
 class Train():
     def __init__(self):
+        print('Initialize training')
+
         self.dataset = Dataset()
         self.transformer = Transformer(NUM_LAYERS,
                                        EMBEDDING_DIMS,

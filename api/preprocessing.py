@@ -1,5 +1,6 @@
 import pickle
 import os
+
 from api.config import RAW_DATA_PATH, PROCESSED_DATA_PATH
 from api.utils import preprocess_sentence
 
@@ -7,6 +8,8 @@ DIRNAME = os.path.dirname(__file__)
 
 class Preprocessing():
     def __init__(self):
+        print('Initialize preprocessing')
+
         self.filenames = os.listdir(os.path.join(DIRNAME, RAW_DATA_PATH))
         orig_subreddits, orig_comments = self._load_data()
         filtered_comments = self._filter_out_negatives(orig_comments)
