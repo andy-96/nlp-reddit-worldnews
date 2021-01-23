@@ -64,13 +64,20 @@ class CommentGenerator():
             
             # return the result if the predicted_id is equal to the end token
             if predicted_id == end_token:
-                return self.comment_tokenizer.sequences_to_texts(output.numpy())[0]
+                # remove start token and end symbol
+                comment = self.comment_tokenizer.sequences_to_texts(output.numpy())[0]
+                comment = ' '.join(comment.split(' ')[1:-1])
+                return comment
             
             # concatentate the predicted_id to the output which is given to the decoder
             # as its input.
             output = tf.concat([output, predicted_id], axis=-1)
 
-        return self.comment_tokenizer.sequences_to_texts(output.numpy())[0]
+        # remove start token and end symbol
+        comment = self.comment_tokenizer.sequences_to_texts(output.numpy())[0]
+        comment = ' '.join(comment.split(' ')[1:-1])
+
+        return comment
 
 
 if __name__ == '__main__':
@@ -79,4 +86,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     commentGenerator = CommentGenerator()
-    print(commentGenerator.generate(args.headline))
+    comment = commentGenerator.generate(args.headline)
+    print(comment)
