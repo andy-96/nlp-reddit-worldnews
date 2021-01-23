@@ -7,12 +7,13 @@ from datetime import date
 import pickle
 load_dotenv()
 
-def load_data (subreddit):
+def load_data (subreddit,days):
+    """grabs 10 submissions per day for the given amount of days before 20.01.2021"""
     i = 0
     after = 1611010800
     before = 1611097199
     submission_ids=[]
-    while i < 10:
+    while i < days:
         try:
             page_data = requests.get(f'http://api.pushshift.io/reddit/search/submission/?subreddit={subreddit}&size=10&before={before}&after={after}&sort=desc&sort_type=score').json()
         except:
@@ -25,16 +26,81 @@ def load_data (subreddit):
         i+=1
     return submission_ids 
     
-def fetch_posts (ids,comment_limit):
-    top_subreddits = []
-    top_comments = []
+def load_fetch_data (subreddit, days, saving_timeframe=30):
+    """grabs 10 submissions per day for the given amount of days before 20.01.2021 and saves the top 10 comments each"""
+    i = 0
+    after = 1611010800
+    before = 1611097199
+    #timeframe is ... days
+    timeframe = saving_timeframe
+    tf_begin = 0
+    tf_end = 0
+    tf_posts = []
+    tf_comments = []
+    total_posts = 0
+    total_comments = 0
 
+    for i in range(days):
+        #setup file name
+        if i%timeframe == 0:
+            tf_end = before
+        
+        #get submission ids for the day
+        submission_ids=[]
+        try:
+            page_data = requests.get(f'http://api.pushshift.io/reddit/search/submission/?subreddit={subreddit}&size=10&before={before}&after={after}&sort=desc&sort_type=score').json()
+        except:
+            continue
+        for submission in page_data['data']:
+            submission_ids.append(submission['id'])
+        #get top post/comment information
+        top_posts,top_comments_all = fetch_posts(submission_ids)
+        tf_posts.extend(top_posts)
+        tf_comments.extend(top_comments_all)
 
-    all_comments = [] #REDDIT answer
+        #write data to file after 30 days
+        if i%timeframe == timeframe - 1:
+            tf_begin = after
+            with open(f'./data/{tf_begin}_to_{tf_end}_{subreddit}_posts.pkl', 'wb') as f:
+                pickle.dump(tf_posts, f)
+                f.close()
+            with open(f'./data/{tf_begin}_to_{tf_end}_{subreddit}_comments.pkl', 'wb') as f:
+                pickle.dump(tf_comments, f)
+                f.close()
+            total_posts += len(tf_posts)
+            total_comments += len(tf_comments)
+            tf_posts = []
+            tf_comments = []
+            print(f'{subreddit}: Crawled {total_posts} posts and got {total_comments} comments.')
+        
+        #prepare next step
+        after -= 86400
+        before -= 86400
+    
+    #clean up leftovers (write more data)
+    if len(tf_posts) != 0:
+        tf_begin = after + 86400
+        with open(f'./data/{tf_begin}_to_{tf_end}_{subreddit}_posts.pkl', 'wb') as f:
+            pickle.dump(tf_posts, f)
+            f.close()
+        with open(f'./data/{tf_begin}_to_{tf_end}_{subreddit}_comments.pkl', 'wb') as f:
+            pickle.dump(tf_comments, f)
+            f.close()
+        total_posts += len(tf_posts)
+        total_comments += len(tf_comments)
+    
+    print(f'{subreddit}: Crawled {total_posts} posts and got {total_comments} comments.')
+    return total_posts,total_comments
 
+def fetch_posts (ids):
+    """grabs data via praw for set of submission ids"""
+    top_posts = []
+    top_comments_all = []
+
+    #iterate over postids
     for post_id in ids:
         post = reddit.submission(id=post_id)
-        #print(post)
+        #save post information to list
         postData = {
                 'title': post.title,
                 'score': post.score,
@@ -45,28 +111,19 @@ def fetch_posts (ids,comment_limit):
                 'permalink': post.permalink,
                 'created_utc': post.created_utc
             }
-        #print(postData)
-        top_subreddits.append(postData)
-        print(f'Post ID: {post_id}')
+        top_posts.append(postData)
 
+        #format praw post comments
         post.comments.replace_more(limit=1)
         post.comment_sort = 'top'
-        post.comment_limit = comment_limit
-        
-        #REDDIT ANSWER
-        #submission_comments = praw.helpers.flatten_tree(post.comments)
-        #don't include non comment objects such as "morecomments"
-        #real_comments = [comment for comment in submission_comments if isinstance(comment, praw.objects.Comment)]
-        #real_comments.sort(key=lambda comment: comment.score, reverse=True)
-        #toppp_comments = real_comments[:25] #top 25 comments
-        #print(f'amount of comments here: {len(toppp_comments)}')
-        #print(toppp_comments)
-        comments123 = []
+        post.comment_limit = 10
+        top_comments = []
 
         for comment in post.comments:
             # check if end of page
             if isinstance(comment, MoreComments):
                 continue
+            #save post comment information to list
             commentData = {
                 'id': comment.id,
                 'body': comment.body,
@@ -76,36 +133,27 @@ def fetch_posts (ids,comment_limit):
                 'postId': postData['id']
             }
             top_comments.append(commentData)
-            print(f'Comment score: {commentData["score"]}')
-            comments123.append(commentData)
-        comments123.sort(key=lambda comment: comment["score"], reverse=True)
-        for comment in comments123:
-            print(f'123Comment score: {comment["score"]}')
-    print(f'Crawled {len(top_subreddits)} posts.')
-    print(f'Got {len(top_comments)} comments.')
-    #print(top_comments)
+        #filter 10 best comments
+        top_comments.sort(key=lambda comment: comment["score"], reverse=True)
+        top_comments_all.extend(top_comments[:10])
+
+    print(f'{len(top_posts)} posts, {len(top_comments_all)} comments')
+    return top_posts,top_comments_all
     
-
-
 
 if __name__ == "__main__":
     
     subreddits = ['worldnews', 'news', 'politics', 'upliftingnews', 'truenews']
     reddit = praw.Reddit(client_id=os.getenv('REDDIT_CLIENT_ID'),client_secret=os.getenv('REDDIT_CLIENT_SECRET'),user_agent='Comment extraction')
-    ids = []
-    #for subreddit in subreddits:
-    #    print(f'Fetching data from {subreddit}')
-    #    ids.extend(load_data(subreddit))
-    #    print(len(ids))
+    num_posts = 0
+    num_comments = 0
+    for subreddit in subreddits:
+        print(f'Fetching data from {subreddit}')
+        posts,comments = load_fetch_data(subreddit,40,180)
+        num_posts += posts
+        num_comments += comments
     
-    ids = ['l0tuef', 'l0szrj', 'k4qide']
-    
-    print(f'Got following submission IDs: {ids}')
-    print(len(ids))
-    x = set(ids)
-    print(len(x))
-
-    fetch_posts(ids,10)
+    print(f'GRAND TOTAL: Crawled {num_posts} posts and got {num_comments} comments in {len(subreddits)} subreddits.')
 
     print('Done!')
 
