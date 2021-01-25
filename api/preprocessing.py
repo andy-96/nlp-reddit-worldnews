@@ -9,8 +9,6 @@ DIRNAME = os.path.dirname(__file__)
 class Preprocessing():
     def __init__(self):
         print('Initialize preprocessing')
-
-        self.filenames = os.listdir(os.path.join(DIRNAME, RAW_DATA_PATH))
         orig_subreddits, orig_comments = self._load_data()
         filtered_comments = self._filter_out_negatives(orig_comments)
         subreddit_comment_pair = self._rearrange_data(filtered_comments, orig_subreddits)
@@ -28,8 +26,9 @@ class Preprocessing():
     def _load_data(self):
         orig_subreddits = []
         orig_comments = []
-        for filename in self.filenames:
-            if 'subreddits' in filename:
+        filenames = os.listdir(os.path.join(DIRNAME, RAW_DATA_PATH))
+        for filename in filenames:
+            if 'posts' in filename:
                 with open(os.path.join(DIRNAME, RAW_DATA_PATH, filename), 'rb') as f:
                     orig_subreddits.extend(pickle.load(f))
             if 'comments' in filename:
