@@ -4,8 +4,6 @@ import os
 from api.config import RAW_DATA_PATH, PROCESSED_DATA_PATH
 from api.utils import preprocess_sentence
 
-DIRNAME = os.path.dirname(__file__)
-
 class Preprocessing():
     def __init__(self):
         print('Initialize preprocessing')
@@ -26,13 +24,13 @@ class Preprocessing():
     def _load_data(self):
         orig_subreddits = []
         orig_comments = []
-        filenames = os.listdir(os.path.join(DIRNAME, RAW_DATA_PATH))
+        filenames = os.listdir(RAW_DATA_PATH)
         for filename in filenames:
             if 'posts' in filename:
-                with open(os.path.join(DIRNAME, RAW_DATA_PATH, filename), 'rb') as f:
+                with open(os.path.join(RAW_DATA_PATH, filename), 'rb') as f:
                     orig_subreddits.extend(pickle.load(f))
             if 'comments' in filename:
-                with open(os.path.join(DIRNAME, RAW_DATA_PATH, filename), 'rb') as g:
+                with open(os.path.join(RAW_DATA_PATH, filename), 'rb') as g:
                     orig_comments.extend(pickle.load(g))
 
         return orig_subreddits, orig_comments

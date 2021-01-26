@@ -19,6 +19,7 @@ requests = "*"
 praw = "*"
 scikit-learn = "*"
 tensorflow = "*"
+transformers = "*"
 
 [requires]
 python_version = "3.8"
