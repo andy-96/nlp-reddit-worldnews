@@ -7,19 +7,31 @@ from api.utils import preprocess_sentence
 class Preprocessing():
     def __init__(self):
         print('Initialize preprocessing')
-        orig_subreddits, orig_comments = self._load_data()
-        filtered_comments = self._filter_out_negatives(orig_comments)
-        subreddit_comment_pair = self._rearrange_data(filtered_comments, orig_subreddits)
-        for i, pair in enumerate(subreddit_comment_pair):
-            subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '! ', True)
-            subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '? ', True)
-            subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '. ', True)
-            subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '\n', False)
+        file = open(os.path.join(PROCESSED_DATA_PATH, f'processed_headlines.txt'), 'r')
+        headline_rows = file.readlines()
         self.headlines = []
+        for row in headline_rows:
+            self.headlines.append(row)
+
+        file = open(os.path.join(PROCESSED_DATA_PATH, f'processed_comments.txt'), 'r')
+        comment_rows = file.readlines()
         self.comments = []
-        for pair in subreddit_comment_pair:
-            self.headlines.append(preprocess_sentence(pair['headline']))
-            self.comments.append(preprocess_sentence(pair['comment']))
+        for row in comment_rows:
+            self.comments.append(row)
+        
+        # orig_subreddits, orig_comments = self._load_data()
+        # filtered_comments = self._filter_out_negatives(orig_comments)
+        # subreddit_comment_pair = self._rearrange_data(filtered_comments, orig_subreddits)
+        # for i, pair in enumerate(subreddit_comment_pair):
+        #     subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '! ', True)
+        #     subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '? ', True)
+        #     subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '. ', True)
+        #     subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '\n', False)
+        # self.headlines = []
+        # self.comments = []
+        # for pair in subreddit_comment_pair:
+        #     self.headlines.append(preprocess_sentence(pair['headline']))
+        #     self.comments.append(preprocess_sentence(pair['comment']))
 
     def _load_data(self):
         orig_subreddits = []
