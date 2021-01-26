@@ -68,11 +68,27 @@ class Preprocessing():
 
 
 if __name__ == '__main__':
-    preprocessing = Preprocessing()
-    with open(os.path.join(PROCESSED_DATA_PATH, f'processed_headlines.pkl'), 'wb') as f:
-        pickle.dump(preprocessing.headlines, f)
-        f.close()
+    # preprocessing = Preprocessing()
+    print('Done initializing...')
 
-    with open(os.path.join(PROCESSED_DATA_PATH, f'processed_comments.pkl'), 'wb') as f:
-        pickle.dump(preprocessing.comments, f)
-        f.close()
+    file = open(os.path.join(PROCESSED_DATA_PATH, f'processed_headlines.txt'), 'r')
+    headline_rows = file.readlines()
+    headlines = []
+    for row in headline_rows:
+        headlines.append(row.split('<start> ')[1].split(' <end>')[0])
+
+    with open(os.path.join(PROCESSED_DATA_PATH, f'processed_headlines2.txt'), 'w') as f:
+        for headline in headlines:
+            f.write("%s\n" % headline)
+    print('Done writing headlines...')
+
+    
+    file = open(os.path.join(PROCESSED_DATA_PATH, f'processed_comments.txt'), 'r')
+    comment_rows = file.readlines()
+    comments = []
+    for row in comment_rows:
+        comments.append(row.split('<start> ')[1].split(' <end>')[0])
+    with open(os.path.join(PROCESSED_DATA_PATH, f'processed_comments2.txt'), 'w') as f:
+        for comment in comments:
+            f.write("%s\n" % comment)
+    print('Done...')
