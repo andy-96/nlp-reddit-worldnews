@@ -8,9 +8,7 @@ class Dataset():
     def __init__(self):
         print('Initialize dataset')
         # Load data
-        preprocessing = Preprocessing()
-        self.headlines = preprocessing.headlines
-        self.comments = preprocessing.comments
+        self.preprocessing = Preprocessing()
         
         # Initialize tokenizer
         self.max_length_output = 0
@@ -27,18 +25,18 @@ class Dataset():
 
     def tokenize(self):
         headline_tokenizer = tf.keras.preprocessing.text.Tokenizer(filters='')
-        headline_tokenizer.fit_on_texts(self.headlines)
+        headline_tokenizer.fit_on_texts(self.preprocessing.headlines)
 
         comment_tokenizer = tf.keras.preprocessing.text.Tokenizer(filters='')
-        comment_tokenizer.fit_on_texts(self.comments)
+        comment_tokenizer.fit_on_texts(self.preprocessing.comments)
 
         return headline_tokenizer, comment_tokenizer
 
     def create_dataset(self):
-        data_headline = self.headline_tokenizer.texts_to_sequences(self.headlines)
+        data_headline = self.headline_tokenizer.texts_to_sequences(self.preprocessing.headlines)
         data_headline = tf.keras.preprocessing.sequence.pad_sequences(data_headline, padding='post')
 
-        data_comment = self.comment_tokenizer.texts_to_sequences(self.comments)
+        data_comment = self.comment_tokenizer.texts_to_sequences(self.preprocessing.comments)
         data_comment = tf.keras.preprocessing.sequence.pad_sequences(data_comment,padding='post')
         self.max_length_output =  self.max_len(data_comment)
 

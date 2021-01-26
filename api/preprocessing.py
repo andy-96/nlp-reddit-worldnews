@@ -69,10 +69,10 @@ class Preprocessing():
 
 if __name__ == '__main__':
     preprocessing = Preprocessing()
-    with open(os.path.join(DIRNAME, PROCESSED_DATA_PATH, f'processed_headlines.pkl'), 'wb') as f:
+    with open(os.path.join(PROCESSED_DATA_PATH, f'processed_headlines.pkl'), 'wb') as f:
         pickle.dump(preprocessing.headlines, f)
         f.close()
 
-    with open(os.path.join(DIRNAME, PROCESSED_DATA_PATH, f'processed_comments.pkl'), 'wb') as f:
+    with open(os.path.join(PROCESSED_DATA_PATH, f'processed_comments.pkl'), 'wb') as f:
         pickle.dump(preprocessing.comments, f)
         f.close()
