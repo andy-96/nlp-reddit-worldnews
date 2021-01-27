@@ -11,3 +11,7 @@ NUM_LAYERS = 4
 EMBEDDING_DIMS = 128
 NUM_HEADS = 8
 EXPANDED_DIMS = 512
+
+# Preprocessing
+PRELOAD_DATA = False
+FILTER_WORDS = ['removed', 'deleted', 'tl;dr']

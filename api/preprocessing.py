@@ -1,37 +1,43 @@
 import pickle
 import os
 
-from api.config import RAW_DATA_PATH, PROCESSED_DATA_PATH
+from api.config import RAW_DATA_PATH, PROCESSED_DATA_PATH, PRELOAD_DATA, FILTER_WORDS
 from api.utils import preprocess_sentence
 
 class Preprocessing():
-    def __init__(self):
+    def __init__(self, save_preprocessed=False):
         print('Initialize preprocessing')
-        file = open(os.path.join(PROCESSED_DATA_PATH, f'processed_headlines.txt'), 'r')
-        headline_rows = file.readlines()
-        self.headlines = []
-        for row in headline_rows:
-            self.headlines.append(row)
+        if (PRELOAD_DATA):
+            self.headlines = self._load_processed_data('processed_headlines.txt')
+            self.comments = self._load_processed_data('processed_comments.txt')
+        else:
+            self.filtered_count = 0
+            orig_subreddits, orig_comments = self._load_data()
+            filtered_comments = self._filter_out_keywords(orig_comments)
+            filtered_comments = self._filter_out_negatives(filtered_comments)
+            subreddit_comment_pair = self._rearrange_data(filtered_comments, orig_subreddits)
+            for i, pair in enumerate(subreddit_comment_pair):
+                subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '! ', True)
+                subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '? ', True)
+                subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '. ', True)
+                subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '\n', False)
+            self.headlines = []
+            self.comments = []
+            for pair in subreddit_comment_pair:
+                self.headlines.append(preprocess_sentence(pair['headline']))
+                self.comments.append(preprocess_sentence(pair['comment']))
+            if save_preprocessed:
+                self._save_to_txt('processed_headlines.txt', self.headlines)
+                self._save_to_txt('processed_comments.txt', self.comments)
+    
+    def _load_processed_data(self, filename):
+        file = open(os.path.join(PROCESSED_DATA_PATH, filename), 'r')
+        rows = file.readlines()
+        data = []
+        for row in rows:
+            data.append(row)
+        return data
 
-        file = open(os.path.join(PROCESSED_DATA_PATH, f'processed_comments.txt'), 'r')
-        comment_rows = file.readlines()
-        self.comments = []
-        for row in comment_rows:
-            self.comments.append(row)
-        
-        # orig_subreddits, orig_comments = self._load_data()
-        # filtered_comments = self._filter_out_negatives(orig_comments)
-        # subreddit_comment_pair = self._rearrange_data(filtered_comments, orig_subreddits)
-        # for i, pair in enumerate(subreddit_comment_pair):
-        #     subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '! ', True)
-        #     subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '? ', True)
-        #     subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '. ', True)
-        #     subreddit_comment_pair[i]['comment'] = self._filter_by_character_and_pad(pair['comment'], '\n', False)
-        # self.headlines = []
-        # self.comments = []
-        # for pair in subreddit_comment_pair:
-        #     self.headlines.append(preprocess_sentence(pair['headline']))
-        #     self.comments.append(preprocess_sentence(pair['comment']))
 
     def _load_data(self):
         orig_subreddits = []
@@ -53,6 +59,20 @@ class Preprocessing():
         for i in input:
             if i['score'] > 0:
                 output.append(i)
+            else:
+                self.filtered_count += 1
+        return output
+    
+    def _filter_out_keywords(self, input):
+        output = []
+        for i in input:
+            for keyword in FILTER_WORDS:
+                if keyword in i['body']:
+                    self.filtered_count += 1
+                    break
+            else:
+                output.append(i)
+
         return output
 
     def _get_subreddit_title(self, subreddit_id, orig_subreddits):
@@ -78,29 +98,12 @@ class Preprocessing():
             return new
         return new + sign
 
+    def _save_to_txt(self, filename, data):
+        file = open(os.path.join(PROCESSED_DATA_PATH, filename), 'w')
+        for d in data:
+            file.write("%s\n" % d)
+
 
 if __name__ == '__main__':
-    # preprocessing = Preprocessing()
-    print('Done initializing...')
-
-    file = open(os.path.join(PROCESSED_DATA_PATH, f'processed_headlines.txt'), 'r')
-    headline_rows = file.readlines()
-    headlines = []
-    for row in headline_rows:
-        headlines.append(row.split('<start> ')[1].split(' <end>')[0])
-
-    with open(os.path.join(PROCESSED_DATA_PATH, f'processed_headlines2.txt'), 'w') as f:
-        for headline in headlines:
-            f.write("%s\n" % headline)
-    print('Done writing headlines...')
-
-    
-    file = open(os.path.join(PROCESSED_DATA_PATH, f'processed_comments.txt'), 'r')
-    comment_rows = file.readlines()
-    comments = []
-    for row in comment_rows:
-        comments.append(row.split('<start> ')[1].split(' <end>')[0])
-    with open(os.path.join(PROCESSED_DATA_PATH, f'processed_comments2.txt'), 'w') as f:
-        for comment in comments:
-            f.write("%s\n" % comment)
-    print('Done...')
+    preprocessing = Preprocessing(True)
+    print(preprocessing.filtered_count)
