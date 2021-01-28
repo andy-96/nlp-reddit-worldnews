@@ -3,6 +3,7 @@ hot-take-model/1/
 *.data-00000-of-00001
 *.index
 .DS_Store
+api/model/pretrained/*/*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
