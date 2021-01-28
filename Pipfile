@@ -20,6 +20,10 @@ praw = "*"
 scikit-learn = "*"
 tensorflow = "*"
 transformers = "*"
+opennmt-tf = "*"
+pyonmttok = "*"
+tensorflow-serving-api = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.8"

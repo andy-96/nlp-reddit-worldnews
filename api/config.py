@@ -15,3 +15,8 @@ EXPANDED_DIMS = 512
 # Preprocessing
 PRELOAD_DATA = False
 FILTER_WORDS = ['removed', 'deleted', 'tl;dr']
+
+# ALT GENERATOR
+MODEL_NAME = "hot-take-model"
+SENTENCEPIECE_MODEL = "hot-take-model/1/assets/wmtende.model"
+TIMEOUT = 5

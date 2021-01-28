@@ -1,0 +1,28 @@
+{
+    "source": "en",
+    "target": "en",
+    "preprocess": [
+        {
+            "op":"tokenization",
+            "source": {
+                "mode": "space"
+            },
+            "target": {
+                "mode": "space"
+            }
+        }
+    ],
+    "vocabulary": {
+        "source": {
+            "path": "/models/nlp/assets/src-vocab.txt"
+        },
+        "target": {
+            "path": "/models/nlp/assets/tgt-vocab.txt"
+        }
+    },
+    "options": {
+        "model_type": "Transformer",
+        "auto_config": true
+    },
+    "model": "nlp"
+}
