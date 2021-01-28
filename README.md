@@ -49,7 +49,6 @@ There are always situations where you don't know the perfect answer to a politic
 `/assets`: Images, PDFs, etc.
 `/data`: Raw and processed data
 `/data-acquisition`: Jupyter notebooks and Python code for acquiring the data
-`/hot-take-model`: Tensorflow's SavedModel of our hot-take-model
 
 ### Data Acquisition
 
