@@ -4,11 +4,13 @@
 
 *This repo was created as part of the Applied Deep Learning for NLP in held in WS 2020/2021 at the Technical University of Munich*
 
->We've built an **Alexa skill** that comments on any given **news headline** based on information that was gathered from **Reddit**.
-
-## Motivation
+## Introduction
 
 There are always situations where you don't know the perfect answer to a political topic and with this project, we have solved this problem!
+
+>We've built an **Alexa skill** that comments on any given **news headline** based on information that was gathered from **Reddit**.
+
+[see examples](#examples)
 
 ## Quickstart
 
@@ -57,6 +59,8 @@ We filtered the data using two approaches:
 As this task can be considered as a translation task, we used a Transformer-based architecture. In total, we trained three models:
 
 1. 50k_comments_model
+    - Did not properly learn grammatical structure
+    - Could not understand the context of the headline
 
 2. 200k_comments_model
 
@@ -77,3 +81,12 @@ Even though, the performance is considerably good, we propose following extensio
 - Deploying this service as a bot on Reddit
 
 ## Examples
+
+## Learnings
+
+- Playing around with and understand the data is crucial to anticipate patterns the model might learn early
+- It makes sense to use a library like OpenNMT to have a good baseline and improve upon this baseline
+- Even though, we "only" collected roughly over 250k comments, the model learned the grammatical structure of the English language and could give coherent answers
+
+
+*With lots of ❤️ by Maja & Andy*
