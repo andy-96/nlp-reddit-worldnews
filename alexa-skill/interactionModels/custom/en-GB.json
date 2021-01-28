@@ -1,0 +1,67 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "give me your hot take",
+      "intents": [
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "CallAPIIntent",
+          "slots": [],
+          "samples": [
+            "Generate comment"
+          ]
+        },
+        {
+          "name": "SongTitleIntent",
+          "slots": [
+            {
+              "name": "lyrics",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "What song starts with {lyrics}"
+          ]
+        },
+        {
+          "name": "TestIntent",
+          "slots": [
+            {
+              "name": "query",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "search {query}"
+          ]
+        }
+      ],
+      "types": [],
+      "modelConfiguration": {
+        "fallbackIntentSensitivity": {
+          "level": "LOW"
+        }
+      }
+    }
+  },
+  "version": "12"
+}
