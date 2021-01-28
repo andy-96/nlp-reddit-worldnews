@@ -1,5 +1,8 @@
-hot-take-model/1/variables
-*zip
+hot-take-model/1/
+*.zip
+*.data-00000-of-00001
+*.index
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
