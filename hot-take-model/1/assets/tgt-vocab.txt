@@ -1,3 +1,8 @@
+<blank>
+<s>
+</s>
+<start>
+<end>
 .
 the
 to

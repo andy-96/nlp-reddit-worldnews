@@ -20,3 +20,4 @@ FILTER_WORDS = ['removed', 'deleted', 'tl;dr']
 MODEL_NAME = "hot-take-model"
 SENTENCEPIECE_MODEL = "hot-take-model/1/assets/wmtende.model"
 TIMEOUT = 5
+MAX_LENGTH = 100

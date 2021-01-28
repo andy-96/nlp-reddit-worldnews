@@ -4,8 +4,9 @@ COPY . /api
 
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
+ENV PORT=9000
+ENV HOST=localhost
 
-RUN apt-get clean
 RUN apt-get update
 RUN apt-get install python3.8 python3-pip -y
 RUN pip3 install pipenv
