@@ -1,0 +1,30 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pycodestyle = "*"
+autopep8 = "*"
+
+[packages]
+fastapi = "*"
+uvicorn = "*"
+joblib = "*"
+numpy = "*"
+starlette = "*"
+pydantic = "*"
+pytest = "*"
+requests = "*"
+praw = "*"
+scikit-learn = "*"
+tensorflow = "*"
+transformers = "*"
+opennmt-tf = "*"
+pyonmttok = "*"
+tensorflow-serving-api = "*"
+python-dotenv = "*"
+pyyaml = "*"
+
+[requires]
+python_version = "3.8"
