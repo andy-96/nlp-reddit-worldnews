@@ -17,8 +17,6 @@ class Dataset():
         self.headline_tokenizer, self.comment_tokenizer = self.tokenize()
         self.input_vocab_size = len(self.headline_tokenizer.word_index) + 1  
         self.target_vocab_size = len(self.comment_tokenizer.word_index) + 1
-        with open('test.txt', 'w') as f:
-            f.write(json.dumps(self.comment_tokenizer.word_index))
 
         self.buffer_size = 0
         self.dataset = self.create_dataset()
