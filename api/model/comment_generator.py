@@ -8,12 +8,14 @@ from api.utils import preprocess_sentence, create_masks, load_model_params
 from api.config import CKPT_PATH
 
 class CommentGenerator():
-    def __init__(self, selected_model, preprocessed_path=''):
+    def __init__(self, selected_model, preprocessed=False):
         print('Initialize comment generator')
+        # Initializations
         num_layers, embedding_dims, num_heads, \
-            expanded_dims, _ = load_model_params(selected_model)
+            expanded_dims, _, _ = load_model_params(selected_model)
+        self.model_path = os.path.join(CKPT_PATH, selected_model)
 
-        self.dataset = Dataset(preprocessed_path)
+        self.dataset = Dataset(selected_model, preprocessed)
         self.transformer = Transformer(num_layers,
                                        embedding_dims,
                                        num_heads,
@@ -22,9 +24,10 @@ class CommentGenerator():
                                        self.dataset.target_vocab_size,
                                        pe_input=self.dataset.input_vocab_size,
                                        pe_target=self.dataset.target_vocab_size)
-        weights_name = sorted([file for file in os.listdir(CKPT_PATH) if 'temp_model' in file], reverse=True)[0]
+        # Choose latest checkpoint
+        weights_name = sorted([file for file in os.listdir(self.model_path) if 'temp_model' in file], reverse=True)[0]
         weights_name = weights_name.split('.')[0]
-        self.transformer.load_weights(os.path.join(CKPT_PATH, weights_name))
+        self.transformer.load_weights(os.path.join(self.model_path, weights_name))
 
         self.headline_tokenizer = self.dataset.headline_tokenizer
         self.comment_tokenizer = self.dataset.comment_tokenizer

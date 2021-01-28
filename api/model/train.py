@@ -11,9 +11,9 @@ class Train():
     def __init__(self, selected_model):
         print('Initialize training')
         num_layers, embedding_dims, num_heads, \
-            expanded_dims, self.epochs = load_model_params(selected_model)
+            expanded_dims, self.epochs, _ = load_model_params(selected_model)
         
-        self.dataset = Dataset()
+        self.dataset = Dataset(selected_model)
         self.transformer = Transformer(num_layers,
                                        embedding_dims,
                                        num_heads,
@@ -96,6 +96,7 @@ class CustomSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--create_new_model', help='Train new model')
     parser.add_argument('--model', help="Choose a model")
     args = parser.parse_args()
 

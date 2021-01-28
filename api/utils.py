@@ -11,20 +11,23 @@ def load_model_params(selected_model):
     pretrained_models = os.listdir(MODEL_PATH)
     for model in pretrained_models:
         if selected_model == model:
-            with open(os.path.join(MODEL_PATH, model), 'r') as f:
-                model_params = yaml.safe_load(os.path.join(MODEL_PATH, model, 'model_config.yaml'))
+            config_path = os.path.join(MODEL_PATH, model, 'model_config.yaml')
+            with open(config_path, 'r') as f:
+                model_params = yaml.safe_load(f)
                 f.close()
             break
     else:
         print('No model config found!')
         exit(1)
+
     num_layers = model_params['NUM_LAYERS']
     embedding_dims = model_params['EMBEDDING_DIMS']
     num_heads = model_params['NUM_HEADS']
     expanded_dims = model_params['EXPANDED_DIMS']
     epochs = model_params['EPOCHS']
+    batch_size = model_params['BATCH_SIZE']
     
-    return num_layers, embedding_dims, num_heads, expanded_dims, epochs
+    return num_layers, embedding_dims, num_heads, expanded_dims, epochs, batch_size
 
 
 def preprocess_sentence(w):

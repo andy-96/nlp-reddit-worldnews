@@ -20,7 +20,7 @@ There are always situations where you don't know the perfect answer to a politic
 2. Serve the model using Tensorflow Serving (Inspired by [this example](https://github.com/OpenNMT/OpenNMT-tf/tree/master/examples/serving/tensorflow_serving))
 
    ```docker run -p 9000:9000 -v $PWD:/models --name tensorflow_serving --entrypoint tensorflow_model_server tensorflow/serving \
-        --enable_batching=true --port=9000 --model_base_path=/models/ende --model_name=ende```
+        --enable_batching=true --port=9000 --model_base_path=/models/hot-take-model --model_name=hot-take-model```
 
 3. Install pipenv: `pip install pipenv`
 4. Setup virtual environment using pipenv: `pipenv --python 3.8`
@@ -31,7 +31,7 @@ There are always situations where you don't know the perfect answer to a politic
 
 ### Self-trained Transformer model
 
-1. Download the 50k_comment_model or the 200k_comment_model
+1. Download the [50k_comment_model](https://drive.google.com/drive/folders/1x-lZc1mWpfzQfhrvAyj485u3cq5IDqk7?usp=sharing) or the [200k_comment_model](https://drive.google.com/drive/folders/1Q8X8osJwx7EklLvoXuSeP2dDA-Go8tL_?usp=sharing)
 2. Move them into `api/model/pretrained`
 3. Install pipenv: `pip install pipenv`
 4. Setup virtual environment using pipenv: `pipenv --python 3.8`
@@ -41,6 +41,15 @@ There are always situations where you don't know the perfect answer to a politic
 8. Test: `curl -X POST localhost:8000/generate-comment -d '{"headline": "This is amazing"}'`
 
 ## Documentation
+
+## Structure of project
+
+`/alexa-skill`: Code of the skill. Can be uploaded to the alexa developer console directly or on Amazon Lambda
+`/api`: Main repo of the API and model
+`/assets`: Images, PDFs, etc.
+`data`: Raw and processed data
+`data-acquisition`: Jupyter notebooks and Python code for acquiring the data
+`hot-take-model`: Tensorflow's SavedModel of our hot-take-model
 
 ### Data Acquisition
 
@@ -56,26 +65,32 @@ We filtered the data using two approaches:
 
 ### Model
 
-As this task can be considered as a translation task, we used a Transformer-based architecture. In total, we trained three models:
+As this task can be considered as a translation task, we used a Transformer-based architecture. In total, we trained three models from scratch:
 
-1. 50k_comments_model
+1. 50k_comments_model (based on the lectures code)
     - Did not properly learn grammatical structure
     - Could not understand the context of the headline
 
-2. 200k_comments_model
+2. 200k_comments_model (based on the lectures code)
+    - One epoch took approx. 4 hours, thus not feasible to train with only access to Google Colab's GPUs
 
 3. OpenNMT Transformer model
+    - Learned grammatical structure
+    - Could give coherent answers to new unseen headlines
+    - Is quite opinionated
+    - Learned correlation between topics were visible, e.g. connecting Republicans/Democrats with Socialist/Communists
 
 ### Deployment
 
 For demonstration purposes, we deployed our project into a production environment using the OpenNMT model. On a AWS-server instance, we started two Docker containers serving the Tensorflow model using Tensorflow Serving and the Python code interacting between Alexa and the model and pre/postprocessing the data.
 
-### Extension
+### Potential Extensions
 
 Even though, the performance is considerably good, we propose following extensions:
 
 - Improved preprocessing of Reddit comments, e.g. using spellchecker
 - Use multi-sentence comments as target data
+- Classify comments on sentiment and thus creating a dynamic comment generator
 - Larger amount of data
 - Extension to further domains than news/politics
 - Deploying this service as a bot on Reddit
@@ -88,5 +103,6 @@ Even though, the performance is considerably good, we propose following extensio
 - It makes sense to use a library like OpenNMT to have a good baseline and improve upon this baseline
 - Even though, we "only" collected roughly over 250k comments, the model learned the grammatical structure of the English language and could give coherent answers
 
+> If there are any questions or problems, feel free to create an issue!
 
 *With lots of ❤️ by Maja & Andy*

@@ -8,22 +8,22 @@ from tensorflow_serving.apis import predict_pb2
 from tensorflow_serving.apis import prediction_service_pb2_grpc
 
 from api.utils import preprocess_sentence
-from api.config import MODEL_NAME, SENTENCEPIECE_MODEL, TIMEOUT, MAX_LENGTH
+from api.config import ONMT_MODEL_NAME, ONMT_SENTENCEPIECE_MODEL, ONMT_TIMEOUT, ONMT_MAX_LENGTH
 
 load_dotenv()
 class CommentGenerator2():
     def __init__(self):
         channel = grpc.insecure_channel("%s:%d" % (os.getenv("TF_HOST"), int(os.getenv("TF_PORT"))))
         self.stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
-        self.tokenizer = pyonmttok.Tokenizer("none", sp_model_path=SENTENCEPIECE_MODEL)
+        self.tokenizer = pyonmttok.Tokenizer("none", sp_model_path=ONMT_SENTENCEPIECE_MODEL)
 
     def pad_batch(self, batch_tokens):
         """Pads a batch of tokens."""
         lengths = [len(tokens) for tokens in batch_tokens]
         for tokens, length in zip(batch_tokens, lengths):
-            if MAX_LENGTH > length:
-                tokens += [""] * (MAX_LENGTH - length)
-        return batch_tokens, lengths, MAX_LENGTH
+            if ONMT_MAX_LENGTH > length:
+                tokens += [""] * (ONMT_MAX_LENGTH - length)
+        return batch_tokens, lengths, ONMT_MAX_LENGTH
 
 
     def extract_prediction(self, result):
@@ -54,7 +54,7 @@ class CommentGenerator2():
         batch_tokens, lengths, max_length = self.pad_batch(batch_tokens)
         batch_size = len(lengths)
         request = predict_pb2.PredictRequest()
-        request.model_spec.name = MODEL_NAME
+        request.model_spec.name = ONMT_MODEL_NAME
         request.inputs["tokens"].CopyFrom(
             tf.make_tensor_proto(
                 batch_tokens, dtype=tf.string, shape=(batch_size, max_length)
@@ -63,7 +63,7 @@ class CommentGenerator2():
         request.inputs["length"].CopyFrom(
             tf.make_tensor_proto(lengths, dtype=tf.int32, shape=(batch_size,))
         )
-        return self.stub.Predict.future(request, TIMEOUT)
+        return self.stub.Predict.future(request, ONMT_TIMEOUT)
 
 
     def generate(self, batch_text):

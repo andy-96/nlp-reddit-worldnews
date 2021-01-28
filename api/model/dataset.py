@@ -1,24 +1,28 @@
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
+import json
 
 from api.preprocessing import Preprocessing
-from api.config import PROCESSED_DATA_PATH, BATCH_SIZE
+from api.utils import load_model_params
 
 class Dataset():
-    def __init__(self, preprocessed_path=''):
+    def __init__(self, selected_model, preprocessed):
         print('Initialize dataset')
         # Load data
-        self.preprocessing = Preprocessing(preprocessed_path)
+        self.preprocessing = Preprocessing(preprocessed, selected_model)
+        _, _, _, _, _, self.batch_size = load_model_params(selected_model)
         
         # Initialize tokenizer
         self.max_length_output = 0
         self.headline_tokenizer, self.comment_tokenizer = self.tokenize()
         self.input_vocab_size = len(self.headline_tokenizer.word_index) + 1  
         self.target_vocab_size = len(self.comment_tokenizer.word_index) + 1
+        with open('test.txt', 'w') as f:
+            f.write(json.dumps(self.comment_tokenizer.word_index))
 
         self.buffer_size = 0
         self.dataset = self.create_dataset()
-        self.steps_per_epoch = self.buffer_size // BATCH_SIZE
+        self.steps_per_epoch = self.buffer_size // self.batch_size
 
     def max_len(self, sentence):
         return max(len(s) for s in sentence)
@@ -43,5 +47,5 @@ class Dataset():
         X_train,  X_test, Y_train, Y_test = train_test_split(data_headline, data_comment, test_size=0.2)
         self.buffer_size = len(X_train)
 
-        return tf.data.Dataset.from_tensor_slices((X_train, Y_train)).shuffle(self.buffer_size).batch(BATCH_SIZE, 
+        return tf.data.Dataset.from_tensor_slices((X_train, Y_train)).shuffle(self.buffer_size).batch(self.batch_size, 
                                                                                             drop_remainder=True) 

@@ -25,12 +25,20 @@ def generate_comment(input: Headline):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Start uvicorn server')
     parser.add_argument('--model', help="Choose a model")
-    parser.add_argument('--preprocessed_data_path', help="Path of preprocessed data")
+    parser.add_argument('--preprocessed_data',
+        help="Preprocessed data available",
+        action="store_true"
+    )
     args = parser.parse_args()
+    
+    if args.model == None:
+        print('No model was chosen... Abort!')
+        exit()
 
     print(f'{args.model} was chosen!')
     if args.model == 'opennmt':
         comment_generator = CommentGenerator2()
     else:
-        comment_generator = CommentGenerator(args.model, args.preprocessed_data_path)
+        comment_generator = CommentGenerator(args.model, args.preprocessed_data)
+    
     uvicorn.run(app, host='0.0.0.0', port=int(os.getenv('PORT')), log_level='info')

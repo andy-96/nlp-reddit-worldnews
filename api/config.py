@@ -1,15 +1,14 @@
 RAW_DATA_PATH = 'data/raw'
-PROCESSED_DATA_PATH = 'data'
-CKPT_PATH = 'api/model/checkpoints'
+CKPT_PATH = 'api/model/pretrained'
 
 # Preprocessing
 FILTER_WORDS = ['removed', 'deleted', 'tl;dr']
 
 # OpenNMT generator
-MODEL_NAME = "hot-take-model"
-SENTENCEPIECE_MODEL = "hot-take-model/1/assets/wmtende.model"
-TIMEOUT = 5
-MAX_LENGTH = 100
+ONMT_MODEL_NAME = "hot-take-model"
+ONMT_SENTENCEPIECE_MODEL = "hot-take-model/1/assets/wmtende.model"
+ONMT_TIMEOUT = 5
+ONMT_MAX_LENGTH = 100
 
 # Model
 MODEL_PATH = 'api/model/pretrained'

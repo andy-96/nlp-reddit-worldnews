@@ -1,15 +1,17 @@
 import pickle
 import os
 
-from api.config import RAW_DATA_PATH, PROCESSED_DATA_PATH, FILTER_WORDS
+from api.config import RAW_DATA_PATH, FILTER_WORDS, MODEL_PATH
 from api.utils import preprocess_sentence
 
 class Preprocessing():
-    def __init__(self, preprocessed_path, save_preprocessed=False):
+    def __init__(self, preprocessed, selected_model='', save_preprocessed=False):
         print('Initialize preprocessing')
-        if (preprocessed_path != ''):
-            self.headlines = self._load_processed_data('processed_headlines.txt')
-            self.comments = self._load_processed_data('processed_comments.txt')
+        if (preprocessed):
+            print('Use preprocessed data...')
+            self.model_path = os.path.join(MODEL_PATH, selected_model)
+            self.headlines = self._load_processed_data(self.model_path, 'processed_headlines.txt')
+            self.comments = self._load_processed_data(self.model_path, 'processed_comments.txt')
         else:
             self.filtered_count = 0
             orig_subreddits, orig_comments = self._load_data()
@@ -29,15 +31,14 @@ class Preprocessing():
             if save_preprocessed:
                 self._save_to_txt('processed_headlines.txt', self.headlines)
                 self._save_to_txt('processed_comments.txt', self.comments)
-    
-    def _load_processed_data(self, filename):
-        file = open(os.path.join(PROCESSED_DATA_PATH, filename), 'r')
+
+    def _load_processed_data(self, preprocessed_path, filename):
+        file = open(os.path.join(preprocessed_path, filename), 'r')
         rows = file.readlines()
         data = []
         for row in rows:
-            data.append(row)
+            data.append(row.split('\n')[0])
         return data
-
 
     def _load_data(self):
         orig_subreddits = []
@@ -99,7 +100,7 @@ class Preprocessing():
         return new + sign
 
     def _save_to_txt(self, filename, data):
-        file = open(os.path.join(PROCESSED_DATA_PATH, filename), 'w')
+        file = open(os.path.join(self.model_path, filename), 'w')
         for d in data:
             file.write("%s\n" % d)
 
