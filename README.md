@@ -31,13 +31,13 @@ There are always situations where you don't know the perfect answer to a politic
 
 ### Self-trained Transformer model
 
-1. Download the [50k_comment_model](https://drive.google.com/drive/folders/1x-lZc1mWpfzQfhrvAyj485u3cq5IDqk7?usp=sharing) or the [200k_comment_model](https://drive.google.com/drive/folders/1Q8X8osJwx7EklLvoXuSeP2dDA-Go8tL_?usp=sharing)
+1. Download the the [200k_comment_model](https://drive.google.com/drive/folders/1Q8X8osJwx7EklLvoXuSeP2dDA-Go8tL_?usp=sharing)
 2. Move them into `api/model/pretrained`
 3. Install pipenv: `pip install pipenv`
 4. Setup virtual environment using pipenv: `pipenv --python 3.8`
 5. Install all dependencies: `pipenv install`
 6. Create environment file based on the `.env.example`
-7. Start server: `pipenv run python3 api.main --model 50k_comment_model --preprocessed_data_path=data`
+7. Start server: `pipenv run python3 api.main --model 200k_comment_model --preprocessed_data`
 8. Test: `curl -X POST localhost:8000/generate-comment -d '{"headline": "This is amazing"}'`
 
 ## Documentation
@@ -47,9 +47,9 @@ There are always situations where you don't know the perfect answer to a politic
 `/alexa-skill`: Code of the skill. Can be uploaded to the alexa developer console directly or on Amazon Lambda
 `/api`: Main repo of the API and model
 `/assets`: Images, PDFs, etc.
-`data`: Raw and processed data
-`data-acquisition`: Jupyter notebooks and Python code for acquiring the data
-`hot-take-model`: Tensorflow's SavedModel of our hot-take-model
+`/data`: Raw and processed data
+`/data-acquisition`: Jupyter notebooks and Python code for acquiring the data
+`/hot-take-model`: Tensorflow's SavedModel of our hot-take-model
 
 ### Data Acquisition
 
@@ -67,11 +67,11 @@ We filtered the data using two approaches:
 
 As this task can be considered as a translation task, we used a Transformer-based architecture. In total, we trained three models from scratch:
 
-1. 50k_comments_model (based on the lectures code)
+1. 50k_comments_model (implementation based on the lectures code, not provided in this repo)
     - Did not properly learn grammatical structure
     - Could not understand the context of the headline
 
-2. 200k_comments_model (based on the lectures code)
+2. 200k_comments_model (implementation based on the lectures code)
     - One epoch took approx. 4 hours, thus not feasible to train with only access to Google Colab's GPUs
 
 3. OpenNMT Transformer model
