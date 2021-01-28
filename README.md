@@ -16,7 +16,7 @@ There are always situations where you don't know the perfect answer to a politic
 
 ### OpenNMT model
 
-1. Download pretrained OpenNMT model [here](https://drive.google.com/drive/folders/17wA8XxT-7rQMqboWUBxBH94fLA5Oifhp?usp=sharing)
+1. Download pretrained [OpenNMT model](https://drive.google.com/drive/folders/17wA8XxT-7rQMqboWUBxBH94fLA5Oifhp?usp=sharing)
 2. Serve the model using Tensorflow Serving (Inspired by [this example](https://github.com/OpenNMT/OpenNMT-tf/tree/master/examples/serving/tensorflow_serving))
 
    ```docker run -p 9000:9000 -v $PWD:/models --name tensorflow_serving --entrypoint tensorflow_model_server tensorflow/serving \
@@ -31,7 +31,7 @@ There are always situations where you don't know the perfect answer to a politic
 
 ### Self-trained Transformer model
 
-1. Download the the [200k_comment_model](https://drive.google.com/drive/folders/1Q8X8osJwx7EklLvoXuSeP2dDA-Go8tL_?usp=sharing)
+1. Download the [200k_comment_model](https://drive.google.com/drive/folders/1Q8X8osJwx7EklLvoXuSeP2dDA-Go8tL_?usp=sharing)
 2. Move them into `api/model/pretrained`
 3. Install pipenv: `pip install pipenv`
 4. Setup virtual environment using pipenv: `pipenv --python 3.8`
@@ -105,4 +105,4 @@ Even though, the performance is considerably good, we propose following extensio
 
 > If there are any questions or problems, feel free to create an issue!
 
-*With lots of ❤️ by Maja & Andy*
+*With lots of ❤️  by Maja & Andy*
