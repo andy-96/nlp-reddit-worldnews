@@ -1,5 +1,3 @@
-# Alexa, Give me your Hot Take
-
 ![Cover](assets/cover.png)
 
 *This repo was created as part of the Applied Deep Learning for NLP in held in WS 2020/2021 at the Technical University of Munich*
@@ -18,10 +16,8 @@ There are always situations where you don't know the perfect answer to a politic
 
 1. Download pretrained OpenNMT model [here](https://drive.google.com/drive/folders/17wA8XxT-7rQMqboWUBxBH94fLA5Oifhp?usp=sharing)
 2. Serve the model using Tensorflow Serving (Inspired by [this example](https://github.com/OpenNMT/OpenNMT-tf/tree/master/examples/serving/tensorflow_serving))
-
    ```docker run -p 9000:9000 -v $PWD:/models --name tensorflow_serving --entrypoint tensorflow_model_server tensorflow/serving \
         --enable_batching=true --port=9000 --model_base_path=/models/hot-take-model --model_name=hot-take-model```
-
 3. Install pipenv: `pip install pipenv`
 4. Setup virtual environment using pipenv: `pipenv --python 3.8`
 5. Install all dependencies: `pipenv install`
