@@ -1,32 +1,35 @@
 import tensorflow as tf
 import os
+import yaml
 
 from api.model.transformer import Transformer
 from api.model.dataset import Dataset
-from api.config import NUM_LAYERS, EMBEDDING_DIMS, NUM_HEADS, EXPANDED_DIMS, CKPT_PATH, EPOCHS
-from api.utils import create_masks
+from api.config import CKPT_PATH
+from api.utils import create_masks, load_model_params
 
 class Train():
-    def __init__(self):
+    def __init__(self, selected_model='50k_comment_model'):
         print('Initialize training')
-
+        num_layers, embedding_dims, num_heads, \
+            expanded_dims, self.epochs = load_model_params(selected_model)
+        
         self.dataset = Dataset()
-        self.transformer = Transformer(NUM_LAYERS,
-                                       EMBEDDING_DIMS,
-                                       NUM_HEADS,
-                                       EXPANDED_DIMS,
+        self.transformer = Transformer(num_layers,
+                                       embedding_dims,
+                                       num_heads,
+                                       expanded_dims,
                                        self.dataset.input_vocab_size,
                                        self.dataset.target_vocab_size,
                                        pe_input=self.dataset.input_vocab_size,
                                        pe_target=self.dataset.target_vocab_size)
 
 
-        self.learning_rate = CustomSchedule(EMBEDDING_DIMS)
+        self.learning_rate = CustomSchedule(embedding_dims)
         self.optimizer = tf.keras.optimizers.Adam(self.learning_rate, beta_1=0.9, beta_2=0.98, 
                                      epsilon=1e-9)
         self.iterator = iter(self.dataset.dataset)
 
-    def train_and_checkpoint(self, epochs):
+    def train_and_checkpoint(self):
         for fname in sorted(os.listdir(CKPT_PATH), reverse=True):
             if 'temp_model' in fname:
                 filename = fname.split('.')[0]
@@ -34,7 +37,7 @@ class Train():
                 self.transformer.load_weights(os.path.join(CKPT_PATH, filename))
                 break
 
-        for epoch in range(epochs):
+        for epoch in range(self.epochs):
             example = next(self.iterator)
             loss = self.train_step(epoch)
             if epoch % 1 == 0:
@@ -93,4 +96,4 @@ class CustomSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
 
 if __name__ == '__main__':
     train = Train()
-    train.train_and_checkpoint(EPOCHS)
+    train.train_and_checkpoint()

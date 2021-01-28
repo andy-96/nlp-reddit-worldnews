@@ -13,7 +13,7 @@ from api.config import MODEL_NAME, SENTENCEPIECE_MODEL, TIMEOUT, MAX_LENGTH
 load_dotenv()
 class CommentGenerator2():
     def __init__(self):
-        channel = grpc.insecure_channel("%s:%d" % (os.getenv("HOST"), int(os.getenv("PORT"))))
+        channel = grpc.insecure_channel("%s:%d" % (os.getenv("TF_HOST"), int(os.getenv("TF_PORT"))))
         self.stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
         self.tokenizer = pyonmttok.Tokenizer("none", sp_model_path=SENTENCEPIECE_MODEL)
 

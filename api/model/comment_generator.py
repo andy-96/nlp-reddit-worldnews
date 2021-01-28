@@ -4,18 +4,20 @@ import argparse
 
 from api.model.dataset import Dataset
 from api.model.transformer import Transformer
-from api.utils import preprocess_sentence, create_masks
-from api.config import NUM_LAYERS, EMBEDDING_DIMS, NUM_HEADS, EXPANDED_DIMS, CKPT_PATH
+from api.utils import preprocess_sentence, create_masks, load_model_params
+from api.config import CKPT_PATH
 
 class CommentGenerator():
-    def __init__(self):
+    def __init__(self, selected_model):
         print('Initialize comment generator')
+        num_layers, embedding_dims, num_heads, \
+            expanded_dims, _ = load_model_params(selected_model)
 
         self.dataset = Dataset()
-        self.transformer = Transformer(NUM_LAYERS,
-                                       EMBEDDING_DIMS,
-                                       NUM_HEADS,
-                                       EXPANDED_DIMS,
+        self.transformer = Transformer(num_layers,
+                                       embedding_dims,
+                                       num_heads,
+                                       expanded_dims,
                                        self.dataset.input_vocab_size,
                                        self.dataset.target_vocab_size,
                                        pe_input=self.dataset.input_vocab_size,
@@ -85,6 +87,6 @@ if __name__ == '__main__':
     parser.add_argument('--headline', help='type your headline')
     args = parser.parse_args()
 
-    commentGenerator = CommentGenerator()
+    commentGenerator = CommentGenerator('50k_comment_model')
     comment = commentGenerator.generate(args.headline)
     print(comment)

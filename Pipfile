@@ -24,6 +24,7 @@ opennmt-tf = "*"
 pyonmttok = "*"
 tensorflow-serving-api = "*"
 python-dotenv = "*"
+pyyaml = "*"
 
 [requires]
 python_version = "3.8"

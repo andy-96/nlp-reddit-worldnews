@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "fc35e485e5b66689df5daf0fa2139c25b710bb85a60b2ba52fd841228b3f1585"
+            "sha256": "2e3d3000a7fa7c90153f67edf893154d68236d5b728148b13d2b882e1a3e69cb"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -68,6 +68,22 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
             "version": "==7.1.2"
+        },
+        "ctranslate2": {
+            "hashes": [
+                "sha256:1147bd2fbd5970274e8bc413e3350011b69e87c07db48543731b4ec8cdface0f",
+                "sha256:65fda6f18d4daacae154eee8ec7fd2ad2108c03d7b888b6f9383da485dab8ded",
+                "sha256:9c5ae025d5df3d319c6896bc8012cfc3a2541df1d233cdee51200cd1b136c485",
+                "sha256:ae7a4ba9d576110de698c29b1dbde303c4ece2039e01466317fb401c25726bae",
+                "sha256:dbe921891d3a8c21461898a2b9356d5f47e2ab670e13d7fddbe142ddd30bb904",
+                "sha256:dfeb533d4434f1e51eadcee9a2748b9546c1ef6a5c03ae422240c6eefb5ffc7a",
+                "sha256:e60ee30110ab5753ca3dde6e00f2f2e5209be1ab618e12023a04c1f4371925bb",
+                "sha256:f00e7fc224832f5ab1922c8223ea33ae8aa362d17096d8463967b18b46098ba8",
+                "sha256:f77f08e8fecdd7020b786ae3d274b5db96cfa651940fdfaf92aeb85612a6e44a",
+                "sha256:ffb0854e96e63a336b4a88cb02bc1400429bd64d48b012673d1ad77465d39c48"
+            ],
+            "markers": "platform_system == 'Darwin'",
+            "version": "==1.18.0"
         },
         "fastapi": {
             "hashes": [
@@ -297,11 +313,11 @@
         },
         "opennmt-tf": {
             "hashes": [
-                "sha256:82f195c7e7ec5f3bc89812e054887c7d3640bf0cf300a5477147b345719a9021",
-                "sha256:f4e4f0834d7ddbca8faffae5e7cad8b6a49dfd854456f07e82f4bc4bea4ae800"
+                "sha256:54e8f52076db8caef1ab11b23de20b97da5db35b4a3e0ffbb52e1c7e1c71fd27",
+                "sha256:fbba8c7e3bb69e45b76a78ba2dce9ff5bd30069954cef2ef402b7d0d609732ac"
             ],
             "index": "pypi",
-            "version": "==2.14.0"
+            "version": "==2.15.0"
         },
         "opt-einsum": {
             "hashes": [
@@ -501,6 +517,7 @@
                 "sha256:cc8955cfbfc7a115fa81d85284ee61147059a753344bc51098f3ccd69b0d7e0c",
                 "sha256:d13155f591e6fcc1ec3b30685d50bf0711574e2c0dfffd7644babf8b5102ca1a"
             ],
+            "index": "pypi",
             "version": "==5.3.1"
         },
         "regex": {

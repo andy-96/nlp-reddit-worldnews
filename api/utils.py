@@ -1,6 +1,30 @@
 import unicodedata
 import re
 import tensorflow as tf
+import os
+import yaml
+
+from api.config import MODEL_PATH
+
+
+def load_model_params(selected_model):
+    pretrained_models = os.listdir(MODEL_PATH)
+    for model in pretrained_models:
+        if selected_model == model:
+            with open(os.path.join(MODEL_PATH, model), 'r') as f:
+                model_params = yaml.safe_load(os.path.join(MODEL_PATH, model, 'model_config.yaml'))
+                f.close()
+            break
+    else:
+        print('No model config found!')
+        exit(1)
+    num_layers = model_params['NUM_LAYERS']
+    embedding_dims = model_params['EMBEDDING_DIMS']
+    num_heads = model_params['NUM_HEADS']
+    expanded_dims = model_params['EXPANDED_DIMS']
+    epochs = model_params['EPOCHS']
+    
+    return num_layers, embedding_dims, num_heads, expanded_dims, epochs
 
 
 def preprocess_sentence(w):
