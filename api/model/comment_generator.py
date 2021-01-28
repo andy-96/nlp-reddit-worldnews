@@ -8,12 +8,12 @@ from api.utils import preprocess_sentence, create_masks, load_model_params
 from api.config import CKPT_PATH
 
 class CommentGenerator():
-    def __init__(self, selected_model):
+    def __init__(self, selected_model, preprocessed_path=''):
         print('Initialize comment generator')
         num_layers, embedding_dims, num_heads, \
             expanded_dims, _ = load_model_params(selected_model)
 
-        self.dataset = Dataset()
+        self.dataset = Dataset(preprocessed_path)
         self.transformer = Transformer(num_layers,
                                        embedding_dims,
                                        num_heads,
@@ -84,9 +84,10 @@ class CommentGenerator():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--headline', help='type your headline')
+    parser.add_argument('--model', help="Choose a model")
+    parser.add_argument('--headline', help='Type your headline')
     args = parser.parse_args()
 
-    commentGenerator = CommentGenerator('50k_comment_model')
+    commentGenerator = CommentGenerator(args.model)
     comment = commentGenerator.generate(args.headline)
     print(comment)

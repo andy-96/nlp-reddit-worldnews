@@ -1,6 +1,6 @@
 import tensorflow as tf
 import os
-import yaml
+import argparse
 
 from api.model.transformer import Transformer
 from api.model.dataset import Dataset
@@ -8,7 +8,7 @@ from api.config import CKPT_PATH
 from api.utils import create_masks, load_model_params
 
 class Train():
-    def __init__(self, selected_model='50k_comment_model'):
+    def __init__(self, selected_model):
         print('Initialize training')
         num_layers, embedding_dims, num_heads, \
             expanded_dims, self.epochs = load_model_params(selected_model)
@@ -95,5 +95,9 @@ class CustomSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
     
 
 if __name__ == '__main__':
-    train = Train()
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--model', help="Choose a model")
+    args = parser.parse_args()
+
+    train = Train(args.model)
     train.train_and_checkpoint()

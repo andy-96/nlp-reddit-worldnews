@@ -3,7 +3,6 @@ PROCESSED_DATA_PATH = 'data'
 CKPT_PATH = 'api/model/checkpoints'
 
 # Preprocessing
-PRELOAD_DATA = False
 FILTER_WORDS = ['removed', 'deleted', 'tl;dr']
 
 # OpenNMT generator

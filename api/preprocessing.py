@@ -1,13 +1,13 @@
 import pickle
 import os
 
-from api.config import RAW_DATA_PATH, PROCESSED_DATA_PATH, PRELOAD_DATA, FILTER_WORDS
+from api.config import RAW_DATA_PATH, PROCESSED_DATA_PATH, FILTER_WORDS
 from api.utils import preprocess_sentence
 
 class Preprocessing():
-    def __init__(self, save_preprocessed=False):
+    def __init__(self, preprocessed_path, save_preprocessed=False):
         print('Initialize preprocessing')
-        if (PRELOAD_DATA):
+        if (preprocessed_path != ''):
             self.headlines = self._load_processed_data('processed_headlines.txt')
             self.comments = self._load_processed_data('processed_comments.txt')
         else:
@@ -105,5 +105,5 @@ class Preprocessing():
 
 
 if __name__ == '__main__':
-    preprocessing = Preprocessing(True)
+    preprocessing = Preprocessing(save_preprocessed=True)
     print(preprocessing.filtered_count)

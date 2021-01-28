@@ -5,10 +5,10 @@ from api.preprocessing import Preprocessing
 from api.config import PROCESSED_DATA_PATH, BATCH_SIZE
 
 class Dataset():
-    def __init__(self):
+    def __init__(self, preprocessed_path=''):
         print('Initialize dataset')
         # Load data
-        self.preprocessing = Preprocessing()
+        self.preprocessing = Preprocessing(preprocessed_path)
         
         # Initialize tokenizer
         self.max_length_output = 0
