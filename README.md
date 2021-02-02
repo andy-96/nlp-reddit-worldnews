@@ -23,7 +23,7 @@ There are always situations where you don't know the perfect answer to a politic
 4. Setup virtual environment using pipenv: `pipenv --python 3.8`
 5. Install all dependencies: `pipenv install`
 6. Create environment file based on the `.env.example`
-7. Start server: `pipenv run python3 -m api.main --model openmnt` or to directly test it: `pipenv run python3 api.model.comment_generator_opennmt --headline "This is amazing"`
+7. Start server: `pipenv run python3 -m api.main --model openmnt` or to directly test it: `pipenv run python3 -m api.model.comment_generator_opennmt --headline "This is amazing"`
 8. Test: `curl -X POST localhost:8000/generate-comment -d '{"headline": "This is amazing"}'`
 
 ### Self-trained Transformer model
