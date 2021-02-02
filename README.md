@@ -23,7 +23,7 @@ There are always situations where you don't know the perfect answer to a politic
 4. Setup virtual environment using pipenv: `pipenv --python 3.8`
 5. Install all dependencies: `pipenv install`
 6. Create environment file based on the `.env.example`
-7. Start server: `pipenv run python3 api.main --model openmnt`
+7. Start server: `pipenv run python3 -m api.main --model openmnt` or to directly test it: `pipenv run python3 api.model.comment_generator_opennmt --headline "This is amazing"`
 8. Test: `curl -X POST localhost:8000/generate-comment -d '{"headline": "This is amazing"}'`
 
 ### Self-trained Transformer model
@@ -34,7 +34,7 @@ There are always situations where you don't know the perfect answer to a politic
 4. Setup virtual environment using pipenv: `pipenv --python 3.8`
 5. Install all dependencies: `pipenv install`
 6. Create environment file based on the `.env.example`
-7. Start server: `pipenv run python3 api.main --model 200k_comment_model --preprocessed_data`
+7. Start server: `pipenv run python3 -m api.main --model 200k_comment_model --preprocessed_data`
 8. Test: `curl -X POST localhost:8000/generate-comment -d '{"headline": "This is amazing"}'`
 
 ## Documentation
@@ -96,6 +96,15 @@ Even though, the performance is considerably good, we propose following extensio
 - Deploying this service as a bot on Reddit
 
 ## Examples
+
+"Estonia to beecome the only country in the world with a female president and female prime minister"
+> it's almost as if the ultra rich don't give a shit.
+
+"politicians want to blow up the planet by two thousand twenty two"
+> this is why i don't have a problem.
+
+"EU urges biden to help draft joint rule book to rein in tech giants"
+> this is the kind of stuff that makes me happy.
 
 ## Learnings
 

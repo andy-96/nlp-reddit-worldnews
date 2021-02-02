@@ -1,8 +1,10 @@
+from numpy import testing
 import tensorflow as tf
 import pyonmttok
 import grpc
 from dotenv import load_dotenv
 import os
+import argparse
 
 from tensorflow_serving.apis import predict_pb2
 from tensorflow_serving.apis import prediction_service_pb2_grpc
@@ -61,7 +63,7 @@ class CommentGenerator2():
             )
         )
         request.inputs["length"].CopyFrom(
-            tf.make_tensor_proto(lengths, dtype=tf.int32, shape=(batch_size,))
+            tf.make_tensor_proto(max_length, dtype=tf.int32, shape=(batch_size,))
         )
         return self.stub.Predict.future(request, ONMT_TIMEOUT)
 
@@ -74,14 +76,14 @@ class CommentGenerator2():
         A generator over the detokenized predictions.
         """
         preprocessed = preprocess_sentence(batch_text)
-        batch_input = [self.tokenizer.tokenize(text)[0] for text in [preprocessed]]
-        future = self.send_request(batch_input)
+        batch_input = [text for text in preprocessed.split(' ')]
+        future = self.send_request([batch_input])
         result = future.result()
         output = [pred for pred in self.extract_prediction(result)][0]
         output = [word.decode("utf-8") for word in output]
         batch_output = output[0]
         for word in output[1:]:
-            if word == 's' or word == 'm' or word == 'd':
+            if word == 's' or word == 'm' or word == 'd' or word == 't':
                 batch_output = "'".join([batch_output, word])
             elif word == '.' or word == '?' or word == '!':
                 batch_output = "".join([batch_output, word])
@@ -90,5 +92,10 @@ class CommentGenerator2():
         return batch_output
 
 if __name__ == "__main__":
-    commentGenerator2 = CommentGenerator2()
-    print(commentGenerator2.generate("I love you"))
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--headline', help='Type your headline')
+    args = parser.parse_args()
+
+    commentGenerator = CommentGenerator2()
+    comment = commentGenerator.generate(args.headline)
+    print(comment)
