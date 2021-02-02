@@ -51,6 +51,8 @@ There are always situations where you don't know the perfect answer to a politic
 
 `/data-acquisition`: Jupyter notebooks and Python code for acquiring the data
 
+`/pretrained`: Pretrained models
+
 ### Data Acquisition
 
 We used [PRAW](https://praw.readthedocs.io/en/latest/index.html) and [pushshift.io](https://pushshift.io/api-parameters/) to crawl Reddit posts and top-level comments from the subreddits *worldnews, news, politics, uplifitingnews, truenews* from over the last 3 years.
