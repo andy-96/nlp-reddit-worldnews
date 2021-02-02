@@ -1,3 +1,8 @@
+"""
+Comment Generator based on our own model
+Can be called directly using python -m api.model.comment_generator --model "xxx" --headline "xxx"
+"""
+
 import tensorflow as tf
 import os
 import argparse
@@ -5,7 +10,7 @@ import argparse
 from api.model.dataset import Dataset
 from api.model.transformer import Transformer
 from api.utils import preprocess_sentence, create_masks, load_model_params
-from api.config import CKPT_PATH
+from api.config import MODEL_PATH
 
 class CommentGenerator():
     def __init__(self, selected_model, preprocessed=False):
@@ -13,7 +18,7 @@ class CommentGenerator():
         # Initializations
         num_layers, embedding_dims, num_heads, \
             expanded_dims, _, _ = load_model_params(selected_model)
-        self.model_path = os.path.join(CKPT_PATH, selected_model)
+        self.model_path = os.path.join(MODEL_PATH, selected_model)
 
         self.dataset = Dataset(selected_model, preprocessed)
         self.transformer = Transformer(num_layers,

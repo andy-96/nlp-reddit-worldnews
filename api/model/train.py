@@ -1,10 +1,14 @@
+"""
+Training script for Transformer model. Used in Colab to train our own model
+"""
+
 import tensorflow as tf
 import os
 import argparse
 
 from api.model.transformer import Transformer
 from api.model.dataset import Dataset
-from api.config import CKPT_PATH
+from api.config import MODEL_PATH
 from api.utils import create_masks, load_model_params
 
 class Train():
@@ -13,6 +17,7 @@ class Train():
         num_layers, embedding_dims, num_heads, \
             expanded_dims, self.epochs, _ = load_model_params(selected_model)
         
+        self.model_path = os.path.join(MODEL_PATH, selected_model)
         self.dataset = Dataset(selected_model)
         self.transformer = Transformer(num_layers,
                                        embedding_dims,
@@ -30,18 +35,18 @@ class Train():
         self.iterator = iter(self.dataset.dataset)
 
     def train_and_checkpoint(self):
-        for fname in sorted(os.listdir(CKPT_PATH), reverse=True):
+        for fname in sorted(os.listdir(self.model_path), reverse=True):
             if 'temp_model' in fname:
                 filename = fname.split('.')[0]
                 print(f'Use {filename}')
-                self.transformer.load_weights(os.path.join(CKPT_PATH, filename))
+                self.transformer.load_weights(os.path.join(self.model_path, filename))
                 break
 
         for epoch in range(self.epochs):
             example = next(self.iterator)
             loss = self.train_step(epoch)
             if epoch % 1 == 0:
-                self.transformer.save_weights(os.path.join(CKPT_PATH, f'{epoch}_temp_model'))
+                self.transformer.save_weights(os.path.join(self.model_path, f'{epoch}_temp_model'))
                 print(f'Saved weights for step {epoch}')
                 print("loss {:1.2f}".format(loss.numpy()))
 

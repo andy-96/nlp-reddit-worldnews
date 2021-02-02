@@ -1,3 +1,7 @@
+"""
+Entrypoint of API
+"""
+
 import os
 import uvicorn
 from fastapi import FastAPI

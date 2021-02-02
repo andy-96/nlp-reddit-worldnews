@@ -1,3 +1,7 @@
+"""
+Preprocess all the data gathered by data-acquisition script
+"""
+
 import pickle
 import os
 

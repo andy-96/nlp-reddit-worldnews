@@ -1,3 +1,7 @@
+"""
+Some utilities like loading model parameter and preprocessing input
+"""
+
 import unicodedata
 import re
 import tensorflow as tf

@@ -1,3 +1,7 @@
+"""
+Definition of Transformer model (influenced by lecture)
+"""
+
 import tensorflow as tf
 import numpy as np
 

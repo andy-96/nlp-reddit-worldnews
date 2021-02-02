@@ -1,4 +1,8 @@
-from numpy import testing
+"""
+Comment Generator based on OpenNMT model
+Can be called directly using python -m api.model.comment_generator_opennmt --headline "xxx"
+"""
+
 import tensorflow as tf
 import pyonmttok
 import grpc

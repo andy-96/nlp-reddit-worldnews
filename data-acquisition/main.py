@@ -1,3 +1,7 @@
+"""
+Script to crawl Reddit data using PRAW and pushshift
+"""
+
 import requests
 import praw
 from praw.models import MoreComments
